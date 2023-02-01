@@ -3,11 +3,6 @@ import Stripe from 'stripe';
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
-  console.log(
-    process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY,
-    '<< KEY >> ',
-    process.env.NEXT_PUBLIC_SANITY_TOKEN
-  );
   if (req.method === 'POST') {
     req.body = JSON.parse(req.body);
     console.log(req.body, ' << REQ', typeof req.body);
@@ -29,7 +24,6 @@ export default async function handler(req, res) {
               'https://cdn.sanity.io/images/bxem7kxu/production/'
             )
             .replace('-webp', '.webp');
-          console.log(newImage, ' << IMAGW');
 
           return {
             price_data: {
@@ -48,8 +42,8 @@ export default async function handler(req, res) {
           };
         }),
 
-        success_url: `${req.headers.origin}/?success=true`,
-        cancel_url: `${req.headers.origin}/?canceled=true`,
+        success_url: `${req.headers.origin}/success`,
+        cancel_url: `${req.headers.origin}/canceled`,
       };
       // Create Checkout Sessions from body params.
       const session = await stripe.checkout.sessions.create(params);
